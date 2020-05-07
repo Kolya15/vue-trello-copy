@@ -1,5 +1,5 @@
 <template>
-    <div id="app">
+    <div id="app" ref="main">
         <component :is="layout">
             <router-view/>
         </component>
@@ -25,8 +25,10 @@
 </script>
 
 <style>
+    html,
     body {
         margin: 0;
+        height: 100%;
     }
 
     #app {
@@ -37,5 +39,7 @@
         color: #2c3e50;
         margin: 0;
         padding: 0;
+        width: 100%;
+        height: 100%;
     }
 </style>

@@ -17,12 +17,9 @@
 
 <style scoped>
     .wrapper-layout {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        padding: 50px 30px;
+        /*width:100%;*/
+        min-height:100%;
+        padding: 50px 0 0 30px;
         background-color: #eae7e7;
     }
     .wrapper-logo{

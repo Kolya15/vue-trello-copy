@@ -2,7 +2,8 @@
     <div class="wrapper-main-page">
         <CreatingButton @hideForm="showFormCreating($event)" title="Create a new board..." :style-btn="styleCreatingBtn" v-if="!showFormAddNewBoard" ></CreatingButton>
         <FormCreatingNewBoard @showForm="showFormCreating($event)" :style-box-form="styleCreatingBtn" v-if="showFormAddNewBoard"></FormCreatingNewBoard>
-        <div class="board" v-for="item in GET_BOARDS" :key="item.id">
+        <div class="board" v-for="(item, index) in GET_BOARDS" :key="item.id">
+            <div class="close-icon-card" @click="deleteBoard(index)"></div>
             <router-link :to="`/board/${item.id}`">{{item.title}}</router-link>
         </div>
     </div>
@@ -27,8 +28,10 @@
       }
     },
     methods: {
+      deleteBoard (index){
+        this.$store.dispatch('DELETE_BOARD', index)
+      },
       showFormCreating(event){
-        console.log(event)
         this.showFormAddNewBoard = event;
       },
     },
@@ -43,6 +46,15 @@
 </script>
 
 <style scoped>
+    .close-icon-card {
+        position: absolute;
+        top: -9px;
+        right: -9px;
+        background-image: url('../assets/images/closeIcon.svg');
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+    }
     .wrapper-main-page {
         display: flex;
         flex-wrap: wrap;
@@ -67,6 +79,7 @@
         font-size: 22px;
         cursor: pointer;
         transition: all .5s;
+        position: relative;
     }
 
     .wrapper-main-page > *:hover {

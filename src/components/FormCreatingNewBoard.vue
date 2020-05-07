@@ -9,7 +9,7 @@
             </div>
             <div class="form-new-board__body">
                 <p class="title-board">What shall we call the board?</p>
-                <input type="text" ref="input">
+                <input type="text" ref="input" @keyup.enter="createNewBoard()">
                 <div class="wrapper-button">
                     <button class="btn-cancel" @click="getStateShowForm()">Canсel</button>
                     <button class="btn-create" @click="createNewBoard()">Create</button>
@@ -36,11 +36,12 @@
         let board = {
           id: Math.floor(Math.random() * 100),
           title: String(this.$refs.input.value),
+          data:[],
         }
         this.$store.dispatch('ADD_BOARD', board);
         this.getStateShowForm();
       }
-    }
+    },
   }
 </script>
 
