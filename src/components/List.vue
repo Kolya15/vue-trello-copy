@@ -113,6 +113,7 @@
     .list-title h3 {
         margin: 15px;
         font-size: 20px;
+        word-wrap: break-word;
     }
 
     .wrapper-list input {
@@ -142,6 +143,9 @@
         cursor: grab;
         transition: margin-top .5s;
         position: relative;
+    }
+    .card h3{
+        word-wrap: break-word;
     }
 
     .archived {

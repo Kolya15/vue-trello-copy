@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper-boards-page" @mousedown="createDrag($event)" @mousemove="goDrag($event)" @mouseup="finishDrag()">
+    <div class="wrapper-boards-page" @touchstart="createDrag($event)" @touchmove="goDrag($event)" @mousedown="createDrag($event)" @mousemove="goDrag($event)" @mouseup="finishDrag()" @touchend="finishDrag()">
         <div class="title-board">
             <h3>{{BOARD.title}}</h3>
         </div>
@@ -10,7 +10,7 @@
         <div class="box-list">
             <List v-for="item in BOARD.data" :id="item.id" :key="item.id" :list="item" :board="getIndexBoard" @mouseup="finishDrag()"></List>
         </div>
-        <div ref="avatar" @mouseup="finishDrag()"></div>
+        <div ref="avatar" @mouseup="finishDrag()" @touchend="finishDrag()"></div>
     </div>
 </template>
 
@@ -38,31 +38,29 @@
       }
     },
     methods: {
-      createDrag(event) {
-        if (event.which != 1) return
-        let elem = event.target;
-        if (!elem.className.includes('card')) {
-          return
-        }
-        this.dragObject.elemReal = elem;
-        this.dragObject.elem = elem.cloneNode(true);
-        this.dragObject.downX = event.pageX;
-        this.dragObject.downY = event.pageY;
-        this.dragObject.coordEvent = elem.getBoundingClientRect();
-        let cardSettings = {
-          cardId: elem.id,
-          listId: elem.closest('.wrapper-list').id,
-        }
-        this.dragCard = this.getCardId(cardSettings)
+      setDragObject (selectedElement){
+          let elem = selectedElement.target;
+          if (!elem.className.includes('card')) {
+            return
+          }
+          this.dragObject.elemReal = elem;
+          this.dragObject.elem = elem.cloneNode(true);
+          this.dragObject.downX = selectedElement.pageX;
+          this.dragObject.downY = selectedElement.pageY;
+          this.dragObject.coordEvent = elem.getBoundingClientRect();
+          let cardSettings = {
+            cardId: elem.id,
+            listId: elem.closest('.wrapper-list').id,
+          }
+          this.dragCard = this.getCardId(cardSettings)
       },
-      goDrag(event) {
-        if (!this.dragObject.elem) return
+      movementDrag(selectedElement){
         if (!this.dragObject.avatar) {
           this.dragObject.elemReal.classList.add('dragCard');
           this.clearSelection();
           // если перенос не начат посчитать дистанцию, на которую переместился курсор мыши
-          let moveX = event.pageX - this.dragObject.downX;
-          let moveY = event.pageY - this.dragObject.downY;
+          let moveX = selectedElement.pageX - this.dragObject.downX;
+          let moveY = selectedElement.pageY - this.dragObject.downY;
           if (Math.abs(moveX) < 3 && Math.abs(moveY) < 3) {
             return; // ничего не делать, мышь не передвинулась достаточно далеко
           }
@@ -80,13 +78,23 @@
 
           this.startDrag(); // отобразить начало переноса
         }
+        event.preventDefault()
         // отобразить перенос объекта при каждом движении мыши
-        this.dragObject.avatar.style.left = event.pageX - this.dragObject.shiftX + 'px';
-        this.dragObject.avatar.style.top = event.pageY - this.dragObject.shiftY + 'px';
+        this.dragObject.avatar.style.left = selectedElement.pageX - this.dragObject.shiftX + 'px';
+        this.dragObject.avatar.style.top = selectedElement.pageY - this.dragObject.shiftY + 'px';
         this.findDroppable(event)
         return false;
       },
-
+      createDrag(event) {
+        // Если событие Touch (сенсор)
+        if (event.changedTouches){
+          this.setDragObject(event.changedTouches[0]);
+        }
+        else{
+          if (event.which != 1) return
+          this.setDragObject(event);
+        }
+      },
       startDrag() {
         let avatar = this.dragObject.elem;
         avatar.setAttribute('id', 'avatar');
@@ -94,6 +102,17 @@
         avatar.style.zIndex = 9999;
         avatar.style.position = 'absolute';
         avatar.style.opacity = '0.8'
+      },
+      goDrag(event) {
+        if (!this.dragObject.elem) return
+
+        // Если событие Touch (сенсор)
+        if (event.changedTouches){
+          this.movementDrag(event.changedTouches[0])
+        }
+        else{
+          this.movementDrag(event)
+        }
       },
 
       getCoords(avatar) {
@@ -103,23 +122,20 @@
           left: box.left + pageXOffset,
         };
       },
-      finishDrag() {
-        if (Object.prototype.hasOwnProperty.call(this.dragObject, "avatar")) {
-          this.dropOnCard = this.getCardId(this.findDroppable(event));
-          this.dragObject.elemReal.classList.remove('dragCard');
-          if (this.dropCardAnimation)  this.dropCardAnimation.style.marginTop = 0 + 'px'
-          document.querySelector('#avatar').remove();
-          this.saveChange(this.dragCard, this.dropOnCard)
-        }
-        this.dragObject = {};
-        return this.dragObject
-      },
+
       findDroppable(event) {
         let cardSettings = {}
         // спрячем переносимый элемент
         this.dragObject.avatar.style.visibility= 'hidden';
+        let elem = null;
         // получить самый вложенный элемент под курсором мыши
-        let elem = document.elementFromPoint(event.clientX, event.clientY);
+        // Если событие Touch (сенсор)
+        if (event.changedTouches){
+           elem = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+        }
+        else {
+           elem = document.elementFromPoint(event.clientX, event.clientY);
+        }
         // показать переносимый элемент обратно
         this.dragObject.avatar.style.visibility= 'visible';
         if (elem === null) {
@@ -145,7 +161,17 @@
         }
         return cardSettings
       },
-
+      finishDrag() {
+        if (Object.prototype.hasOwnProperty.call(this.dragObject, "avatar")) {
+          this.dropOnCard = this.getCardId(this.findDroppable(event));
+          this.dragObject.elemReal.classList.remove('dragCard');
+          if (this.dropCardAnimation) this.dropCardAnimation.style.marginTop = 0 + 'px';
+          document.querySelector('#avatar').remove();
+          this.saveChange(this.dragCard, this.dropOnCard);
+        }
+        this.dragObject = {};
+        return this.dragObject;
+      },
       getCardId (idCardSearch){
         let card = {};
         if (idCardSearch.cardId) {
@@ -163,7 +189,7 @@
       },
 
       saveChange(dragCard, dropCard){
-        if (dropCard){
+        if (dropCard.indexList >= 0){
           this.$store.dispatch('SAVE_DRAG_AND_DROP', {indexBoard:this.getIndexBoard, dragCard: dragCard, dropCard: dropCard})
         }
       },
