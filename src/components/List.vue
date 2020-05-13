@@ -99,6 +99,7 @@
     }
     .wrapper-list {
         padding: 5px;
+        /*min-width: 220px !important;*/
         width: 270px;
         height: 100%;
         position: relative;
@@ -113,6 +114,7 @@
     .list-title h3 {
         margin: 15px;
         font-size: 20px;
+        word-wrap: break-word;
     }
 
     .wrapper-list input {
@@ -120,6 +122,7 @@
         height: 35px;
         padding-left: 10px;
         margin-bottom: 10px;
+        border: 1px solid #a9a9a9;
     }
 
     .wrapper-card {
@@ -143,6 +146,11 @@
         transition: margin-top .5s;
         position: relative;
     }
+    .card h3{
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis !important;
+    }
 
     .archived {
         background-color: #decaff;
@@ -161,5 +169,24 @@
     .checked {
         color: #08ff17;
         cursor: pointer;
+    }
+    @media (max-width: 650px) {
+        .wrapper-list {
+            width: 40%;
+        }
+        .list-title h3 {
+            font-size: 18px;
+        }
+        .card{
+            width: inherit;
+        }
+        .card h3{
+            font-size: 15px;
+        }
+    }
+    @media (max-width: 450px) {
+        .wrapper-list {
+            width: 90%;
+        }
     }
 </style>

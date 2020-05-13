@@ -62,5 +62,11 @@
         padding-left: 10px;
         width: 70%;
         height: 50%;
+        border: 1px solid #a9a9a9;
+    }
+    @media (max-width: 650px) {
+        .wrapper-new-list {
+            width: 90%;
+        }
     }
 </style>
