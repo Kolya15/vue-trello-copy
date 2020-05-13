@@ -3,8 +3,9 @@
         <div class="title-board">
             <h3>{{BOARD.title}}</h3>
         </div>
-        <CreatingButton @hideForm="showFormCreating($event)" title="Add a list.." :style-btn="styleCreatingBtn"
-                        v-if="!showFormAddNewList"></CreatingButton>
+        <div class="creating-list-btn" @click="showFormCreating(true)" v-if="!showFormAddNewList">
+            <h3>Add a list...</h3>
+        </div>
         <FormCreatingNewList @showForm="showFormCreating($event)" v-if="showFormAddNewList"
                              class="form-creating-new-list"></FormCreatingNewList>
         <div class="box-list">
@@ -16,7 +17,6 @@
 
 <script>
   import {mapGetters} from 'vuex'
-  import CreatingButton from "../components/CreatingButton";
   import FormCreatingNewList from "../components/FormCreatingNewList";
   import List from "../components/List"
 
@@ -24,11 +24,6 @@
     name: "Boards",
     data() {
       return {
-        styleCreatingBtn: {
-          width: 200 + 'px',
-          height: 100 + 'px',
-          ['background-color']: `#0a2c74`,
-        },
         showFormAddNewList: false,
         avatar: null,
         dragObject: {},
@@ -212,7 +207,6 @@
       },
     },
     components: {
-      CreatingButton,
       FormCreatingNewList,
       List,
     },
@@ -235,21 +229,39 @@
         margin-bottom: 50px;
     }
 
-    .wrapper-boards-page .form-creating-new-list {
+    .wrapper-boards-page .form-creating-new-list,
+    .wrapper-boards-page .creating-list-btn{
         transition: all .5s;
         -webkit-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
         -moz-box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
         box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3);
     }
 
-    .wrapper-boards-page .form-creating-new-list:hover {
+    .wrapper-boards-page .form-creating-new-list:hover,
+    .wrapper-boards-page .creating-list-btn:hover {
         transform: scale(1.1);
         -webkit-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.3);
         -moz-box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.3);
         box-shadow: 0px 0px 25px 0px rgba(0, 0, 0, 0.3);
     }
-
+    .creating-list-btn{
+        width: 270px;
+        height: 100px;
+        background-color: #0a2c74;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #f5f2f2;
+        cursor: pointer;
+        transition: all .5s;
+        border-radius: 5px;
+    }
+    .title-board{
+        width: 300px;
+        word-wrap: break-word;
+    }
     .title-board h3 {
+        width: inherit;
         margin: 0;
         font-size: 20px;
         font-weight: 600;
@@ -262,5 +274,19 @@
 
     .box-list > * {
         margin: 10px 20px 10px 0;
+    }
+
+    @media (max-width: 650px) {
+        .creating-list-btn,
+        .title-board,
+        .form-creating-new-list{
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+         }
+        .box-list{
+            margin-top: 20px;
+            justify-content: center;
+        }
     }
 </style>

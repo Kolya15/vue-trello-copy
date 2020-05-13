@@ -1,6 +1,6 @@
 <template>
-    <div>
-        <div class="form-new-board" :style="styleBoxForm">
+    <div class="wrapper-form-new-board">
+        <div class="form-new-board">
             <div class="form-new-board__header">
                 <h3>Creating a board</h3>
                 <div>
@@ -47,6 +47,10 @@
 
 <style scoped>
     .form-new-board {
+        width: 360px;
+        min-height: 100px;
+        height: 100%;
+        background-color: #46de87;
         color: #f5f2f2;
         cursor: pointer;
         transition: all .5s;
@@ -105,7 +109,7 @@
     }
 
     .btn-create {
-        width: 25%;
+        width: 40%;
         height: 35px;
         border-radius: 5px;
         border: none;
@@ -129,5 +133,33 @@
     .btn-create:hover {
         background-color: #0AB8F6;
         color: #05ff74;
+    }
+    @media (max-width: 1240px){
+        .wrapper-form-new-board{
+            width: 25% !important;
+        }
+        .form-new-board{
+            width: 100%;
+        }
+    }
+    @media (max-width: 850px) {
+        .wrapper-form-new-board{
+            display: flex;
+            justify-content: center;
+            width: 75% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+         }
+        .form-new-board{
+            width: 100%;
+        }
+    }
+    @media (max-width: 450px) {
+        .wrapper-form-new-board {
+            width: 90%;
+        }
+        .btn-create {
+            width: 40%;
+        }
     }
 </style>
